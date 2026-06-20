@@ -82,11 +82,26 @@ async def del_bank(m: Message):
 
 @dp.message(Command("listbank"))
 async def list_bank(m: Message):
-    if not os.path.exists(BANK_FILE): await m.answer("Danh sách trống.")
-    else:
-        with open(BANK_FILE, "r", encoding="utf-8") as f:
-            lines = [f"{i+1}. {line.strip()}" for i, line in enumerate(f.readlines())]
-        await m.answer("📋 Ngân hàng:\n" + "\n".join(lines))
+    if not os.path.exists(BANK_FILE): 
+        await m.answer("Danh sách ngân hàng trống.")
+        return
+    
+    with open(BANK_FILE, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        
+    output = "📋 Danh sách ngân hàng:\n\n"
+    for i, line in enumerate(lines):
+        if not line.strip(): continue
+        parts = line.strip().split('|')
+        if len(parts) == 3:
+            output += (
+                f"{i+1}: Bank {i+1}\n"
+                f"- 银行名称: {parts[1]}\n"
+                f"- 银行账号: {parts[0]}\n"
+                f"- 收款人姓名: {parts[2]}\n\n"
+            )
+    
+    await m.answer(output)
 
 # --- XỬ LÝ GIAO DỊCH (TAG BOT) ---
 @dp.message()
