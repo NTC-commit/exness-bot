@@ -79,7 +79,13 @@ async def del_bank(m: Message):
         with open(BANK_FILE, "w", encoding="utf-8") as f: f.writelines(lines)
         await m.answer("✅ Đã xóa.")
     except: await m.answer("⚠️ Lỗi định dạng.")
-
+        
+@dp.message(Command("rate"))
+async def check_rate(m: Message):
+    # Đọc tỷ giá từ file, mặc định là 25000 nếu chưa set
+    current_rate = get_val(RATE_FILE, 25000)
+    await m.answer(f"💰 Rate USDT: {current_rate:,.0f}")
+    
 @dp.message(Command("listbank"))
 async def list_bank(m: Message):
     if not os.path.exists(BANK_FILE): 
